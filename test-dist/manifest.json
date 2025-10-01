@@ -1,0 +1,74 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 999999,
+    "appName": "Retro 80's",
+    "appType": "watchface",
+    "version": {
+      "code": 2,
+      "name": "2.0.0"
+    },
+    "icon": "icon.png",
+    "vender": "jorgealejandro.rosales",
+    "description": "Premium retro 80s digital watch face with 9 stunning color themes and complete health data integration"
+  },
+  "permissions": [
+    "data:user.hd.step",
+    "data:user.hd.calorie",
+    "data:user.hd.heart_rate",
+    "data:user.hd.battery"
+  ],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "1.0.0",
+      "target": "1.0.1",
+      "minVersion": "1.0.0"
+    }
+  },
+  "targets": {
+    "gtr4": {
+      "module": {
+        "watchface": {
+          "path": "gtr4/index",
+          "main": 1
+        }
+      },
+      "platforms": [
+        {
+          "name": "gtr4",
+          "deviceSource": 230
+        }
+      ],
+      "designWidth": 466,
+      "screenShape": "ROUND"
+    },
+    "gts4": {
+      "module": {
+        "watchface": {
+          "path": "gts4/index",
+          "main": 1
+        }
+      },
+      "platforms": [
+        {
+          "name": "gts4",
+          "deviceSource": 229
+        }
+      ],
+      "designWidth": 390,
+      "screenShape": "RECT"
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "Retro 80's"
+    },
+    "zh-CN": {
+      "appName": "复古80年代"
+    },
+    "zh-TW": {
+      "appName": "復古80年代"
+    }
+  },
+  "defaultLanguage": "en-US"
+}

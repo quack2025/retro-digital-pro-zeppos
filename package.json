@@ -8,6 +8,8 @@
     "dev:gts4": "zeus dev -t gts4",
     "build": "node build.js",
     "build:zab": "node create-zab.js",
+    "build:minimal": "node create-minimal-zab.js",
+    "build:test-id": "node create-test-appid.js",
     "preview": "zeus preview -t gtr4",
     "preview:gts4": "zeus preview -t gts4",
     "clean": "rimraf dist"

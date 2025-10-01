@@ -1,0 +1,46 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 1091559,
+    "appName": "Retro 80's",
+    "appType": "watchface",
+    "version": {
+      "code": 2,
+      "name": "2.0.0"
+    },
+    "icon": "icon.png",
+    "vender": "jorgealejandro.rosales",
+    "description": "Premium retro 80s digital watch face"
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "1.0.0",
+      "target": "1.0.1",
+      "minVersion": "1.0.0"
+    }
+  },
+  "targets": {
+    "gtr4": {
+      "module": {
+        "watchface": {
+          "path": "gtr4/index",
+          "main": 1
+        }
+      },
+      "platforms": [
+        {
+          "name": "gtr4",
+          "deviceSource": 230
+        }
+      ],
+      "designWidth": 466
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "Retro 80's"
+    }
+  },
+  "defaultLanguage": "en-US"
+}
