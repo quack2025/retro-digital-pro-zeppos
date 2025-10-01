@@ -45,13 +45,30 @@ function buildProject() {
 
   // Create manifest.json for Zepp Console
   const appJson = JSON.parse(fs.readFileSync('app.json', 'utf8'))
+
+  // Transform i18n to use appName instead of name
+  const i18nTransformed = {}
+  if (appJson.i18n) {
+    Object.keys(appJson.i18n).forEach(lang => {
+      i18nTransformed[lang] = {
+        appName: appJson.i18n[lang].name || appJson.app.appName
+      }
+    })
+  }
+
   const manifest = {
     configVersion: appJson.configVersion,
     app: appJson.app,
-    permissions: appJson.permissions,
-    runtime: appJson.runtime,
+    permissions: appJson.permissions || [],
+    runtime: {
+      apiVersion: {
+        compatible: "1.0.0",
+        target: "1.0.1",
+        minVersion: "1.0.0"
+      }
+    },
     targets: {},
-    i18n: appJson.i18n
+    i18n: i18nTransformed
   }
 
   // Device source mapping for Zepp Console
