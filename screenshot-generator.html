@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Digital Pro - Screenshot Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+
+        select, button, input {
+            padding: 8px 15px;
+            margin: 5px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+        }
+
+        button {
+            cursor: pointer;
+            background: #00FF41;
+            color: black;
+            font-weight: bold;
+            border: none;
+        }
+
+        button:hover {
+            background: #00CC33;
+        }
+
+        .canvas-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .canvas-wrapper {
+            text-align: center;
+        }
+
+        canvas {
+            border: 2px solid #444;
+            border-radius: 10px;
+            background: black;
+        }
+
+        .canvas-label {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #00FF41;
+        }
+
+        .instructions {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #2a2a2a;
+            border-left: 4px solid #00FF41;
+        }
+
+        .theme-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h1>📸 Retro Digital Pro - Screenshot Generator</h1>
+
+        <div class="control-group">
+            <label>Device:</label>
+            <select id="deviceSelect">
+                <option value="gtr4">GTR4 (466x466 Round)</option>
+                <option value="gts4">GTS4 (390x390 Square)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Theme:</label>
+            <select id="themeSelect">
+                <optgroup label="Classic">
+                    <option value="classic-0">🟢 Retro Green</option>
+                    <option value="classic-1">🔵 Ice Blue</option>
+                    <option value="classic-2">🟠 Amber Gold</option>
+                </optgroup>
+                <optgroup label="Gaming">
+                    <option value="gaming-0">🌸 Neon Pink</option>
+                    <option value="gaming-1">🟣 Cyber Purple</option>
+                    <option value="gaming-2">💚 Matrix Green</option>
+                </optgroup>
+                <optgroup label="Luxury">
+                    <option value="luxury-0">🌹 Rose Gold</option>
+                    <option value="luxury-1">⚪ Platinum</option>
+                    <option value="luxury-2">🔷 Deep Blue</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Time Format:</label>
+            <select id="timeFormat">
+                <option value="24">24-hour (14:30:45)</option>
+                <option value="12">12-hour (2:30:45 PM)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Time:</label>
+            <input type="time" id="timeInput" value="14:30">
+        </div>
+
+        <div class="control-group">
+            <label>Steps:</label>
+            <input type="number" id="stepsInput" value="8234" min="0" max="99999">
+        </div>
+
+        <div class="control-group">
+            <label>Heart Rate:</label>
+            <input type="number" id="heartInput" value="72" min="0" max="220">
+        </div>
+
+        <div class="control-group">
+            <label>Calories:</label>
+            <input type="number" id="caloriesInput" value="425" min="0" max="9999">
+        </div>
+
+        <div class="control-group">
+            <label>Battery (%):</label>
+            <input type="number" id="batteryInput" value="85" min="0" max="100">
+        </div>
+
+        <div class="control-group">
+            <button onclick="generateScreenshot()">🎨 Generate Screenshot</button>
+            <button onclick="downloadScreenshot()">💾 Download PNG</button>
+            <button onclick="generateAllThemes()">🎯 Generate All Themes</button>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 Instructions:</h3>
+        <ol>
+            <li>Select device type (GTR4 round or GTS4 square)</li>
+            <li>Choose a theme from the dropdown</li>
+            <li>Adjust time, health data, and battery level</li>
+            <li>Click "Generate Screenshot" to preview</li>
+            <li>Click "Download PNG" to save the image</li>
+            <li>Use "Generate All Themes" to create all 9 variants at once</li>
+        </ol>
+    </div>
+
+    <div class="canvas-container">
+        <div class="canvas-wrapper">
+            <canvas id="watchCanvas"></canvas>
+            <div class="canvas-label">Watch Face Preview</div>
+        </div>
+    </div>
+
+    <script>
+        const THEMES = {
+            classic: [
+                { name: 'Retro Green', primary: '#00FF41', secondary: '#00CC33', accent: '#66FF66', dim: '#004411' },
+                { name: 'Ice Blue', primary: '#00BFFF', secondary: '#0080FF', accent: '#40E0FF', dim: '#004466' },
+                { name: 'Amber Gold', primary: '#FFBF00', secondary: '#CC9900', accent: '#FFD700', dim: '#664400' }
+            ],
+            gaming: [
+                { name: 'Neon Pink', primary: '#FF1493', secondary: '#CC1177', accent: '#FF69B4', dim: '#660033' },
+                { name: 'Cyber Purple', primary: '#8A2BE2', secondary: '#6A1B9A', accent: '#DA70D6', dim: '#330066' },
+                { name: 'Matrix Green', primary: '#39FF14', secondary: '#2BCC10', accent: '#5FFF5F', dim: '#116611' }
+            ],
+            luxury: [
+                { name: 'Rose Gold', primary: '#FF9999', secondary: '#CC7777', accent: '#FFB3B3', dim: '#663333' },
+                { name: 'Platinum', primary: '#C0C0C0', secondary: '#999999', accent: '#E0E0E0', dim: '#444444' },
+                { name: 'Deep Blue', primary: '#4169E1', secondary: '#2E4BC6', accent: '#6495ED', dim: '#224466' }
+            ]
+        };
+
+        const DEVICES = {
+            gtr4: { width: 466, height: 466, shape: 'round' },
+            gts4: { width: 390, height: 390, shape: 'square' }
+        };
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return num.toString();
+        }
+
+        function formatTime(hour, minute, is24Hour) {
+            const h = parseInt(hour);
+            const m = parseInt(minute);
+            const s = 45; // Fixed seconds for consistency
+
+            if (is24Hour) {
+                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            } else {
+                const period = h >= 12 ? 'PM' : 'AM';
+                const hour12 = h % 12 || 12;
+                return `${hour12}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')} ${period}`;
+            }
+        }
+
+        function generateScreenshot() {
+            const canvas = document.getElementById('watchCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const deviceType = document.getElementById('deviceSelect').value;
+            const device = DEVICES[deviceType];
+            const themeKey = document.getElementById('themeSelect').value;
+            const [collection, index] = themeKey.split('-');
+            const theme = THEMES[collection][parseInt(index)];
+
+            const is24Hour = document.getElementById('timeFormat').value === '24';
+            const timeInput = document.getElementById('timeInput').value.split(':');
+            const steps = parseInt(document.getElementById('stepsInput').value);
+            const heart = parseInt(document.getElementById('heartInput').value);
+            const calories = parseInt(document.getElementById('caloriesInput').value);
+            const battery = parseInt(document.getElementById('batteryInput').value);
+
+            // Set canvas size
+            canvas.width = device.width;
+            canvas.height = device.height;
+
+            // Helper function for responsive sizing
+            const px = (value) => Math.round(value * device.width / 466);
+
+            // Clear canvas
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw border frame
+            ctx.strokeStyle = theme.dim;
+            ctx.lineWidth = px(2);
+            if (device.shape === 'round') {
+                ctx.beginPath();
+                ctx.arc(device.width / 2, device.height / 2, device.width / 2 - px(10), 0, Math.PI * 2);
+                ctx.stroke();
+            } else {
+                ctx.strokeRect(px(10), px(10), device.width - px(20), device.height - px(20));
+            }
+
+            // Draw time background glow
+            ctx.fillStyle = theme.secondary + '80'; // 50% opacity
+            roundRect(ctx, px(40), px(140), px(386), px(90), px(10));
+            ctx.fill();
+
+            // Draw time text
+            ctx.fillStyle = theme.primary;
+            ctx.font = `bold ${is24Hour ? px(64) : px(48)}px 'Courier New', monospace`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(formatTime(timeInput[0], timeInput[1], is24Hour), device.width / 2, px(185));
+
+            // Draw date
+            ctx.fillStyle = theme.accent;
+            ctx.font = `${px(22)}px 'Courier New', monospace`;
+            const date = new Date();
+            const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            ctx.fillText(`${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`, device.width / 2, px(260));
+
+            // Draw health data boxes
+            drawHealthBox(ctx, px(40), px(300), px(120), px(50), 'STEPS', formatNumber(steps), theme.dim, theme.accent, theme.primary, px);
+            drawHealthBox(ctx, px(173), px(300), px(120), px(50), 'HEART', heart.toString(), '#440000', '#FF6666', '#FF0000', px);
+            drawHealthBox(ctx, px(306), px(300), px(120), px(50), 'KCAL', formatNumber(calories), theme.dim, theme.accent, theme.primary, px);
+
+            // Draw battery
+            const batColor = battery > 20 ? '#00FF00' : '#FF0000';
+            const batBg = battery > 20 ? '#004400' : '#440000';
+            drawHealthBox(ctx, px(173), px(365), px(120), px(50), 'BATTERY', `${battery}%`, batBg, batColor, batColor, px);
+
+            // Draw theme info
+            ctx.fillStyle = theme.dim + '33'; // 20% opacity
+            roundRect(ctx, px(40), px(365), px(120), px(40), px(5));
+            ctx.fill();
+
+            ctx.fillStyle = theme.dim;
+            ctx.font = `${px(11)}px 'Courier New', monospace`;
+            ctx.textAlign = 'center';
+            ctx.fillText(collection.toUpperCase(), px(100), px(378));
+            ctx.fillText(theme.name, px(100), px(395));
+        }
+
+        function drawHealthBox(ctx, x, y, w, h, label, value, bgColor, labelColor, valueColor, px) {
+            // Background
+            ctx.fillStyle = bgColor + '4D'; // 30% opacity
+            roundRect(ctx, x, y, w, h, px(5));
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = labelColor;
+            ctx.font = `${px(12)}px 'Courier New', monospace`;
+            ctx.textAlign = 'center';
+            ctx.fillText(label, x + w / 2, y + px(17));
+
+            // Value
+            ctx.fillStyle = valueColor;
+            ctx.font = `bold ${px(18)}px 'Courier New', monospace`;
+            ctx.fillText(value, x + w / 2, y + px(38));
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function downloadScreenshot() {
+            const canvas = document.getElementById('watchCanvas');
+            const deviceType = document.getElementById('deviceSelect').value;
+            const themeKey = document.getElementById('themeSelect').value;
+            const [collection, index] = themeKey.split('-');
+            const theme = THEMES[collection][parseInt(index)];
+
+            const link = document.createElement('a');
+            link.download = `retro-digital-pro-${deviceType}-${collection}-${theme.name.toLowerCase().replace(/ /g, '-')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function generateAllThemes() {
+            const deviceType = document.getElementById('deviceSelect').value;
+            const is24Hour = document.getElementById('timeFormat').value === '24';
+
+            let delay = 0;
+            for (const collection in THEMES) {
+                THEMES[collection].forEach((theme, index) => {
+                    setTimeout(() => {
+                        document.getElementById('themeSelect').value = `${collection}-${index}`;
+                        generateScreenshot();
+                        setTimeout(() => {
+                            downloadScreenshot();
+                        }, 100);
+                    }, delay);
+                    delay += 500;
+                });
+            }
+
+            alert('Generating all 9 themes! Downloads will start automatically.');
+        }
+
+        // Generate initial screenshot on load
+        window.onload = () => {
+            generateScreenshot();
+        };
+    </script>
+</body>
+</html>
