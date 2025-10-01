@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "zeus dev -t gtr4",
     "dev:gts4": "zeus dev -t gts4",
-    "build": "zeus build",
+    "build": "node build.js",
+    "build:zab": "node create-zab.js",
     "preview": "zeus preview -t gtr4",
     "preview:gts4": "zeus preview -t gts4",
     "clean": "rimraf dist"
