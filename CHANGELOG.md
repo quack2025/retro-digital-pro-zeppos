@@ -5,6 +5,25 @@ All notable changes to Retro Digital Pro Watch Face will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-10-01
+
+### ✨ Added
+- **12/24 Hour Format Toggle**: Tap on time display to switch between formats
+- **Persistent Format Preference**: Time format choice is saved across sessions
+- **Dynamic Text Sizing**: Automatic font size adjustment for 12h mode (AM/PM)
+- **Haptic Feedback**: Vibration confirmation for format changes
+- **Dual Device Support**: Feature implemented for both GTR4 and GTS4
+
+### 🎨 Changed
+- Updated app version from 1.0.0 to 2.0.0
+- Time display now supports both 12-hour (with AM/PM) and 24-hour formats
+- Improved touch interaction with dedicated time display button
+
+### 📚 Documentation
+- Updated README with new feature information
+- Enhanced USER_MANUAL with 12/24h toggle instructions
+- Added feature to CHANGELOG
+
 ## [2.1.0] - 2024-01-30
 
 ### 🎨 Changed

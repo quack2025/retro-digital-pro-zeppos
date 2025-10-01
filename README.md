@@ -41,7 +41,8 @@ A premium digital watch face for Zepp OS smartwatches featuring 9 stunning color
 - **Deep Blue**: Royal sapphire blue
 
 ### Interactive Zones
-The watch face is divided into three invisible touch zones:
+The watch face features intuitive touch interactions:
+- **Tap on Time**: Toggle between 12-hour and 24-hour format
 - **Top Third**: Cycle through themes within current collection
 - **Middle Third**: Switch between collections (Classic/Gaming/Luxury)
 - **Bottom Third**: Quick view with temporary backlight boost

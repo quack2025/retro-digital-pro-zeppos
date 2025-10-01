@@ -64,7 +64,14 @@ When you first activate Retro Digital Pro:
 
 ## Using Touch Controls
 
-The watch face has **three invisible touch zones**:
+The watch face features intuitive touch interactions:
+
+### Time Display - Toggle 12/24 Hour Format
+- **Tap** directly on the time display
+- Switches between 12-hour (with AM/PM) and 24-hour format
+- Single vibration confirms change
+- Your preference is saved automatically
+- Example: 14:30:45 ↔ 2:30:45 PM
 
 ### Top Third - Change Theme
 - **Tap** the upper portion of the screen
