@@ -54,22 +54,38 @@ function buildProject() {
     i18n: appJson.i18n
   }
 
+  // Device source mapping for Zepp Console
+  const deviceSourceMap = {
+    'gtr4': 230,
+    'gts4': 229,
+    'gtr3': 226,
+    'gts4mini': 246
+  }
+
   // Adjust paths for manifest.json (remove 'assets/' prefix)
   BUILD_CONFIG.targets.forEach(target => {
     if (appJson.targets[target]) {
       manifest.targets[target] = {
-        ...appJson.targets[target],
         module: {
           watchface: {
-            path: target,
-            main: 'index'
+            path: `${target}/index`,
+            main: 1
           }
-        }
+        },
+        platforms: [
+          {
+            name: target,
+            deviceSource: deviceSourceMap[target] || 230
+          }
+        ],
+        designWidth: appJson.targets[target].designWidth,
+        screenShape: appJson.targets[target].screenShape
       }
-      // Remove debugKey as it's not needed in production
-      delete manifest.targets[target].debugKey
     }
   })
+
+  // Add default language
+  manifest.defaultLanguage = 'en-US'
 
   fs.writeFileSync(
     path.join(BUILD_CONFIG.outputDir, 'manifest.json'),
