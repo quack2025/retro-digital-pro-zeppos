@@ -7,6 +7,7 @@
 import { getDeviceInfo } from '@zos/device'
 import { createWidget, widget, align, prop, text_style } from '@zos/ui'
 import { Time, HeartRate, Step, Calorie, Battery, Vibrator } from '@zos/sensor'
+import { getLanguage } from '@zos/settings'
 import { localStorage } from '@zos/storage'
 import { createTimer, stopTimer } from '@zos/timer'
 
@@ -53,7 +54,8 @@ const state = {
   currentCollectionIndex: 0,
   currentThemeIndex: 0,
   currentTheme: null,
-  lastTapTime: 0
+  lastTapTime: 0,
+  is24Hour: true
 }
 
 const widgets = {}
@@ -73,10 +75,25 @@ function formatNumber(num) {
 }
 
 function formatTime(time) {
-  if (!time) return '00:00:00'
-  return [time.hour || 0, time.minute || 0, time.second || 0]
-    .map(n => n.toString().padStart(2, '0'))
-    .join(':')
+  if (!time) return state.is24Hour ? '00:00:00' : '12:00:00 AM'
+
+  let hour = time.hour || 0
+  let period = ''
+
+  if (!state.is24Hour) {
+    period = hour >= 12 ? ' PM' : ' AM'
+    hour = hour % 12
+    if (hour === 0) hour = 12
+  }
+
+  const minute = (time.minute || 0).toString().padStart(2, '0')
+  const second = (time.second || 0).toString().padStart(2, '0')
+
+  if (state.is24Hour) {
+    return `${hour.toString().padStart(2, '0')}:${minute}:${second}`
+  } else {
+    return `${hour}:${minute}:${second}${period}`
+  }
 }
 
 function formatDate(time) {
@@ -90,6 +107,7 @@ function loadPreferences() {
   try {
     const savedCollection = localStorage.getItem('theme_collection')
     const savedTheme = localStorage.getItem('theme_index')
+    const saved24Hour = localStorage.getItem('is_24_hour')
 
     if (savedCollection !== undefined && savedCollection !== null) {
       state.currentCollectionIndex = Math.abs(parseInt(savedCollection)) % COLLECTIONS.length
@@ -98,6 +116,11 @@ function loadPreferences() {
     if (savedTheme !== undefined && savedTheme !== null) {
       const collection = THEME_COLLECTIONS[COLLECTIONS[state.currentCollectionIndex]]
       state.currentThemeIndex = Math.abs(parseInt(savedTheme)) % collection.length
+    }
+
+    // Load 24h preference or default to true
+    if (saved24Hour !== undefined && saved24Hour !== null) {
+      state.is24Hour = parseInt(saved24Hour) === 1
     }
 
     state.currentTheme = THEME_COLLECTIONS[COLLECTIONS[state.currentCollectionIndex]][state.currentThemeIndex]
@@ -110,6 +133,7 @@ function savePreferences() {
   try {
     localStorage.setItem('theme_collection', state.currentCollectionIndex)
     localStorage.setItem('theme_index', state.currentThemeIndex)
+    localStorage.setItem('is_24_hour', state.is24Hour ? 1 : 0)
   } catch (e) {}
 }
 
@@ -193,8 +217,16 @@ WatchFace({
     widgets.time = createWidget(widget.TEXT, {
       x: px(50), y: px(145), w: px(366), h: px(80),
       text: formatTime(sensors.time.getTime()),
-      text_size: px(64), color: state.currentTheme.primary,
+      text_size: state.is24Hour ? px(64) : px(48),
+      color: state.currentTheme.primary,
       align_h: align.CENTER_H, align_v: align.CENTER_V
+    })
+
+    // Add invisible button over time to toggle 12/24h format
+    widgets.timeBtn = createWidget(widget.BUTTON, {
+      x: px(40), y: px(140), w: px(386), h: px(90),
+      normal_color: 0x000000, press_color: 0x000000, alpha: 0,
+      click_func: () => handleTap(() => this.toggle24Hour())
     })
   },
 
@@ -305,6 +337,19 @@ WatchFace({
     this.updateThemeColors()
     savePreferences()
     haptic('double')
+  },
+
+  toggle24Hour() {
+    state.is24Hour = !state.is24Hour
+    savePreferences()
+    haptic('single')
+
+    // Update time text size for 12h format (needs more space for AM/PM)
+    widgets.time.setProperty(prop.MORE, {
+      text_size: state.is24Hour ? px(64) : px(48)
+    })
+
+    this.updateTime()
   },
 
   quickView() {

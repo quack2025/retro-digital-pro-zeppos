@@ -5,8 +5,8 @@
     "appName": "Retro 80's",
     "appType": "watchface",
     "version": {
-      "code": 1,
-      "name": "1.0.0"
+      "code": 2,
+      "name": "2.0.0"
     },
     "icon": "icon.png",
     "vender": "jorgealejandro.rosales",
