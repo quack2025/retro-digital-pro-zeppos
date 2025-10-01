@@ -1,0 +1,85 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 1091559,
+    "appName": "Retro 80's",
+    "appType": "watchface",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "icon.png",
+    "vender": "jorgealejandro.rosales",
+    "description": "Premium retro 80s digital watch face with 9 stunning color themes and complete health data integration"
+  },
+  "permissions": [
+    "data:user.hd.step",
+    "data:user.hd.calorie",
+    "data:user.hd.heart_rate",
+    "data:user.hd.battery"
+  ],
+  "runtime": {
+    "apiVersion": {
+      "minVersion": "3.0",
+      "maxVersion": "*",
+      "targetVersion": "3.6"
+    }
+  },
+  "targets": {
+    "gtr4": {
+      "module": {
+        "watchface": {
+          "path": "assets/gtr4",
+          "main": "index"
+        }
+      },
+      "debugKey": "gtr4_debug.der",
+      "designWidth": 466,
+      "screenShape": "ROUND"
+    },
+    "gts4": {
+      "module": {
+        "watchface": {
+          "path": "assets/gts4", 
+          "main": "index"
+        }
+      },
+      "debugKey": "gts4_debug.der",
+      "designWidth": 390,
+      "screenShape": "RECT"
+    },
+    "gtr3": {
+      "module": {
+        "watchface": {
+          "path": "assets/gtr3",
+          "main": "index"
+        }
+      },
+      "debugKey": "gtr3_debug.der",
+      "designWidth": 454,
+      "screenShape": "ROUND"
+    },
+    "gts4mini": {
+      "module": {
+        "watchface": {
+          "path": "assets/gts4mini",
+          "main": "index"
+        }
+      },
+      "debugKey": "gts4mini_debug.der",
+      "designWidth": 336,
+      "screenShape": "RECT"
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "name": "Retro 80's"
+    },
+    "zh-CN": {
+      "name": "复古80年代"
+    },
+    "zh-TW": {
+      "name": "復古80年代"
+    }
+  }
+}

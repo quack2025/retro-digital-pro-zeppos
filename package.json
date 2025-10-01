@@ -1,0 +1,33 @@
+{
+  "name": "zepp-os-watchface",
+  "version": "1.0.0",
+  "description": "Zepp OS watch face application",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "zeus dev -t gtr4",
+    "dev:gts4": "zeus dev -t gts4",
+    "build": "zeus build",
+    "preview": "zeus preview -t gtr4",
+    "preview:gts4": "zeus preview -t gts4",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "zepp-os",
+    "watchface",
+    "smartwatch",
+    "gtr4",
+    "gts4"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@zeppos/zeus-cli": "^1.1.8",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "zeppos-app-utils": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
